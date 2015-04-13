@@ -1,10 +1,20 @@
 import requests
-import difflib
-import  json
-import pprint
+import json
 from _io import open
+import json_tools
 
-class Request:
+
+class TestCase:
+    def __init__(self, test_json):
+        self.test_data = test_json
+        print(self.test_data)
+        self.name = self.test_data["name"]
+        self.request_url = self.test_data["request"]["url"] 
+        self.request_method = self.test_data["request"]["method"]
+        self.response_content = self.test_data["response"]["content"]
+        
+        
+class Tester:
     GET = "get"
     POST = "post"
     PUT = "put"
@@ -12,44 +22,49 @@ class Request:
     
     def send(self, url, method, payLoad):
         response = ""
-        if method == self.GET:
-            response = requests.get(dealUrl)
+        if not url:
+            raise Exception("url is empty")
+        elif method == self.GET:
+            response = requests.get(url)
         elif method == self.POST:
-            response = requests.post(dealUrl, payLoad)
+            response = requests.post(url, payLoad)
         elif method == self.PUT:
-            response = requests.put(dealUrl, payLoad)
+            response = requests.put(url, payLoad)
         elif method == self.DELETE:
-            response = requests.delete(dealUrl)
+            response = requests.delete(url)
         else:
             return ""
         return response
     
     def write(self, content, filename):
-        with open(filename, 'wb') as outfile:
-            json.dump(content, outfile)
+        with open(filename, 'w') as outfile:
+            outfile.write(content)
             
     def read(self, filename):
         with open(filename) as inputfile:
-            return json.load(inputfile)
+            return inputfile.read()
+        
+    def write_json(self, filename, content):
+        with open(filename, 'wb') as outfile:
+            json.dump(content, outfile)
     
-    def getdifference(self, actual, expected):
-        diff = difflib.ndiff(actual, expected)
-        difference = ""
-        for d in diff:
-            if(d.startswith("+")):
-                difference += d
-        return difference
+    def read_json(self, filename):
+        with open(filename) as inputfile:
+            return json.load(inputfile)
+
        
-dealUrl = ""
+tester = Tester()
+test_case_json = tester.read_json("testcase/verify_deal_title.json")
 payLoad = {}
 
-request = Request()
-response = request.send(dealUrl, "get", payLoad)
-request.write(response.json(), "expected.json")
+test_case = TestCase(test_case_json)
+response = tester.send(test_case.request_url, "get", payLoad)
+actual = response.json()
 
-actual = request.read("expected.json")
-expected = request.read("expected.json")
+expected = test_case.response_content
+diff = json_tools.diff(expected, actual)
+out_put_diff_name = "result/diff" + "_" + test_case.name.replace(" ", "_") + ".json"
+tester.write_json(out_put_diff_name, diff)
 
-print(request.getdifference("amjad", "amjap"))
 
 
