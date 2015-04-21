@@ -1,10 +1,11 @@
-import requests
-import json
 from _io import open
-import json_tools
 import dpath.util
-from urllib3.util import current_time
+import json
+import json_tools
 import os.path
+import requests
+from urllib3.util import current_time
+
 
 __TESTCAST_CONTENT_NAME__ = "content"
 __ORIGINAL_JSON_NAME__ = "original"

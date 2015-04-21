@@ -1,13 +1,14 @@
-import Tkinter as tk
 from Tkinter import Button
-from tkFileDialog import askopenfilename
-from Tkinter import Text
 from Tkinter import END
+from Tkinter import Text
+import json
+import json_tools
+from lib2to3.main import diff_texts
+from tkFileDialog import askopenfilename
 
 from RestMe import Tester, TestCase
-import json
-from lib2to3.main import diff_texts
-import json_tools
+import Tkinter as tk
+
 
 class Application(tk.Frame):
     def __init__(self, master=None):
