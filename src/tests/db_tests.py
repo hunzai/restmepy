@@ -1,4 +1,4 @@
-from src.utils.thirft import get_transaction_in_month, get_connection
+from utils.thirft import get_transaction_in_month, get_connection
 import unittest
 
 class TestUtils(unittest.TestCase):
